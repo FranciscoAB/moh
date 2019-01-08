@@ -9,11 +9,18 @@ class Enemy(pygame.sprite.Sprite):
         self.image = pygame.image.load("enemy.png").convert_alpha()
         self.rect = self.image.get_rect()
 
-        self.speed_y = 1
+        self.timerBeforeMoveLimit = randint(1, 2)
+        self.timerBeforeMove = 0
 
     def update(self):
-        if self.rect.y > DISPLAY_HEIGHT:
-            self.rect.x = randint(0, DISPLAY_WIDTH)
+        
+        self.timerBeforeMove += 1
+        
+        if self.timerBeforeMove >= self.timerBeforeMoveLimit:
+            self.timerBeforeMove = 0
+            self.rect.y += 1            
+        
+        if self.rect.y > DISPLAY_HEIGHT_GAMEZONE:
+            self.rect.x = randint(0, DISPLAY_WIDTH_GAMEZONE - self.rect.w)
+            self.timerBeforeMoveLimit = randint(1, 2)
             self.rect.y = 0
-            
-        self.rect.y += self.speed_y
