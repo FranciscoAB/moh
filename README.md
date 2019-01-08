@@ -1,7 +1,7 @@
 # moh
 moh - A game in the space
 
-To play this game, follow following steps:
+To play this game, follow these steps:
 
 1) Install PyGame (if you have it installed already, go to next step) according PyGame official webpage: https://www.pygame.org/wiki/GettingStarted
 
