@@ -4,6 +4,9 @@ from random import randint
 
 from PlayerMisc import *
 from EnemyMisc import *
+from EnvironmentMisc import *
+from GameDisplay import *
+
 from Util import *
 
 '''
@@ -13,15 +16,10 @@ Initialization
 pygame.init()
 
 #Creates the game window
-win = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
+win = pygame.display.set_mode((DISPLAY_WIDTH_TOTAL, DISPLAY_HEIGHT_TOTAL))
 
 #Set a title in the created window
 display = pygame.display.set_caption("moh")
-
-'''
-Score
-'''
-score = 0
 
 '''
 Player
@@ -31,8 +29,8 @@ all_sprites = pygame.sprite.Group()
 
 #Creates and initializes the player
 player = Player()
-player.rect.x = DISPLAY_WIDTH / 2
-player.rect.y = DISPLAY_HEIGHT - player.rect.h
+player.rect.x = DISPLAY_WIDTH_GAMEZONE / 2
+player.rect.y = DISPLAY_HEIGHT_GAMEZONE - player.rect.h
 all_sprites.add(player)
 
 '''
@@ -54,9 +52,34 @@ enemiesCount = 0
 def generateEnemies():
     for x in range(0, enemiesCount):
         enemy = Enemy()
-        enemy.rect.x = randint(0, DISPLAY_WIDTH)
+        enemy.rect.x = randint(0, DISPLAY_WIDTH_GAMEZONE - enemy.rect.w)
         enemy.rect.y = randint(0, 10)
         enemiesList.add(enemy)
+
+'''
+Stars
+'''
+
+starsList = []
+
+for x in range(0, STARS_COUNT):
+    star = Star(win)
+    star.rect.x = randint(0, DISPLAY_WIDTH_GAMEZONE)
+    star.rect.y = randint(0, DISPLAY_HEIGHT_GAMEZONE)
+    starsList.append(star)
+
+'''
+GameDisplay
+'''
+gameDisplay = GameDisplay(win)
+
+#Score number
+score = 0
+
+#Game display score (text)
+myFont = pygame.font.SysFont("Roboto", 50)
+scoreText = "Score: 0"
+textSurface = myFont.render(scoreText, False, BLACK)
 
 '''
 Game Loop
@@ -125,6 +148,8 @@ while run:
                 enemy.kill()
                 playerBullet.kill()
                 score += 1
+                scoreText = "Score: " + str(score)
+                textSurface = myFont.render(scoreText, False, BLACK)
 
     #Checks if enemiesList reachs 0. If its the case, increase
     #the enemies counter and regenerates the enemies.
@@ -141,11 +166,20 @@ while run:
     #Updates enemies and player bullets
     enemiesList.update()
     playerBulletList.update()
-
-    #Draws the player, the enemies and player bullets
+    
+    #draws stars
+    for newStar in starsList:
+        newStar.update();
+        pygame.draw.rect(win, newStar.color, newStar.rect)
+        
+    #Draws player, enemies and player bullets
     all_sprites.draw(win)
     enemiesList.draw(win)
     playerBulletList.draw(win)
+
+    #Draws game Display
+    pygame.draw.rect(win, gameDisplay.color, gameDisplay.rect)
+    win.blit(textSurface, (DISPLAY_WIDTH_GAMEZONE + 1, 1))
 
     #Update the display (flip)
     pygame.display.update()
