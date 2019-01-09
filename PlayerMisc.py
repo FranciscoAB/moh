@@ -23,7 +23,8 @@ class Player(pygame.sprite.Sprite):
     Player Movement functions
     '''
     def moveUp(self):
-        self.rect.y -= 1
+        if self.rect.y > 0:
+            self.rect.y -= 1
             
     def moveDown(self):  
         if self.rect.y < DISPLAY_HEIGHT_GAMEZONE - self.rect.height:
@@ -34,7 +35,8 @@ class Player(pygame.sprite.Sprite):
             self.rect.x += 1
         
     def moveLeft(self):
-        self.rect.x -= 1            
+        if self.rect.x > 0:
+            self.rect.x -= 1            
 
 '''
 Class representing the player bullets.
