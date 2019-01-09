@@ -52,6 +52,7 @@ enemiesCount = 0
 def generateEnemies():
     for x in range(0, enemiesCount):
         enemy = Enemy()
+        enemy.updateTimerLimit = randint(1, 10)
         enemy.rect.x = randint(0, DISPLAY_WIDTH_GAMEZONE - enemy.rect.w)
         enemy.rect.y = randint(0, 10)
         enemiesList.add(enemy)
@@ -87,16 +88,34 @@ Game Loop
 #Sets the initial state of the main loop
 run = True
 
+before = pygame.time.get_ticks()
+deltaTime = 0
+
 #Main loop of the game
 while run:
-
-    #Delay to make the game slower (arreglar esto con FPSs)
-    pygame.time.delay(4)
+    
+    deltaTime = pygame.time.get_ticks() - before
+    #print (deltaTime)
+    before = pygame.time.get_ticks()
 
     #Checks for user input, to exit from the game
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_RIGHT:
+                player.updateTimer = player.updateTimerLimit
+                
+        if event.type == pygame.KEYDOWN:
+            #Player shot
+            if event.key == pygame.K_SPACE or event.key == pygame.K_LCTRL:
+                if len(playerBulletList) < player.maxCurrentBullets:
+                    playerBullet = PlayerBullet()
+                    playerBullet.rect.x = player.rect.x + player.rect.width / 2 - playerBullet.rect.width / 2
+                    playerBullet.rect.y = player.rect.y - playerBullet.rect.height
+                    playerBulletList.add(playerBullet)
+            if event.key == pygame.K_ESCAPE:
+                run = False
 
     '''
     mouseState = pygame.mouse.get_pressed()
@@ -110,28 +129,19 @@ while run:
 
     #Checks for keyboard arrows to move the player
     keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT]:
-        player.moveLeft()
-        
-    if keys[pygame.K_RIGHT]:
-        player.moveRight()
-        
-    if keys[pygame.K_UP]:
-        player.moveUp()
-        
-    if keys[pygame.K_DOWN]:
-        player.moveDown()
-        
-    if keys[pygame.K_ESCAPE]:
-        run = False
-
-    #Player shot
-    if keys[pygame.K_SPACE]:
-        if len(playerBulletList) == 0:
-            playerBullet = PlayerBullet()
-            playerBullet.rect.x = player.rect.x + player.rect.width / 2 - playerBullet.rect.width / 2
-            playerBullet.rect.y = player.rect.y - playerBullet.rect.height
-            playerBulletList.add(playerBullet)
+    if keys[pygame.K_LEFT] or keys[pygame.K_RIGHT] or keys[pygame.K_UP] or keys[pygame.K_DOWN]:
+        if player.updateTimer >= player.updateTimerLimit:
+            if keys[pygame.K_LEFT]:
+                player.moveLeft()
+            if keys[pygame.K_RIGHT]:
+                player.moveRight()
+            if keys[pygame.K_UP]:
+                player.moveUp()
+            if keys[pygame.K_DOWN]:
+                player.moveDown()        
+            player.updateTimer = 0
+            
+        player.updateTimer += 1
 
     #Clears the display with black color
     win.fill((0, 0, 0))
@@ -164,8 +174,8 @@ while run:
             run = False
 
     #Updates enemies and player bullets
-    enemiesList.update()
-    playerBulletList.update()
+    enemiesList.update(deltaTime)
+    playerBulletList.update(deltaTime)
     
     #draws stars
     for newStar in starsList:
