@@ -48,6 +48,8 @@ class PlayerBullet (pygame.sprite.Sprite):
         self.image = pygame.image.load("bullet.png").convert()
         self.rect = self.image.get_rect()
 
+        self.power = 1
+
         self.updateTimerLimit = 1
         self.updateTimer = 0
 
