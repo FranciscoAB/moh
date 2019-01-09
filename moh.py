@@ -12,8 +12,6 @@ from Util import *
 
 from Score import *
 
-print ("pedo")
-
 '''
 Initialization
 '''
