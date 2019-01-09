@@ -1,4 +1,5 @@
 import pygame
+
 import time
 from random import randint
 
@@ -8,6 +9,8 @@ from EnvironmentMisc import *
 from GameDisplay import *
 
 from Util import *
+
+from Score import *
 
 '''
 Initialization
@@ -56,6 +59,20 @@ def generateEnemies():
         enemy.rect.x = randint(0, DISPLAY_WIDTH_GAMEZONE - enemy.rect.w)
         enemy.rect.y = randint(0, 10)
         enemiesList.add(enemy)
+        
+    for x in range(0, randint(0, enemiesCount + 2 / 2)):
+        enemyBig = EnemyBig()
+        enemyBig.updateTimerLimit = randint(1, 10)
+        enemyBig.rect.x = randint(0, DISPLAY_WIDTH_GAMEZONE - enemyBig.rect.w)
+        enemyBig.rect.y = randint(0, 10)
+        enemiesList.add(enemyBig)
+
+#Enemies spacesiphs: Generate randomly over time, they die when reach display boundaries
+
+timeBeforeGeneration = randint(8000, 30000)
+generationTimer = 0
+        
+enemySpaceship = pygame.sprite.Group()
 
 '''
 Stars
@@ -75,7 +92,7 @@ GameDisplay
 gameDisplay = GameDisplay(win)
 
 #Score number
-score = 0
+score = Score()
 
 #Game display score (text)
 myFont = pygame.font.SysFont("Roboto", 50)
@@ -99,7 +116,8 @@ while run:
     before = pygame.time.get_ticks()
 
     #Checks for user input, to exit from the game
-    for event in pygame.event.get():
+    events = pygame.event.get()
+    for event in events:
         if event.type == pygame.QUIT:
             run = False
         if event.type == pygame.KEYUP:
@@ -127,6 +145,13 @@ while run:
         pygame.draw.rect(win, (0, 255, 0), (pygame.mouse.get_pos()[0] - dotSize / 2, pygame.mouse.get_pos()[1] - dotSize / 2, dotSize, dotSize))
     '''
 
+    #Generates enemy spaceships randomly
+    generationTimer +=deltaTime
+    if generationTimer >= timeBeforeGeneration:
+        generationTimer = 0
+        es = EnemySpaceship()
+        enemySpaceship.add(es)
+
     #Checks for keyboard arrows to move the player
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT] or keys[pygame.K_RIGHT] or keys[pygame.K_UP] or keys[pygame.K_DOWN]:
@@ -151,18 +176,36 @@ while run:
         if pb.mustDie() == True:
             pb.kill()
 
+    #Checks if the enemy spaceship must be destryoed (it reaches display boundaries)
+    for es in enemySpaceship:
+        if es.mustDie() == True:
+            es.kill()
+
     #Checks for each enemy and for each playerBullet if they collide
     for enemy in enemiesList:
         for playerBullet in playerBulletList:
             if pygame.sprite.collide_rect(enemy, playerBullet):
-                enemy.kill()
                 playerBullet.kill()
-                score += 1
-                scoreText = "Score: " + str(score)
+                enemy.damage(playerBullet.power)
+                if enemy.health <= 0:
+                    score.add(enemy.scoreValue)
+                    enemy.kill()
+                    scoreText = "Score: " + str(score.score)
+                    textSurface = myFont.render(scoreText, False, BLACK)
+
+    #Checks for each enemy spaceship and for each playerBullet if they collide
+    for es in enemySpaceship:
+        for playerBullet in playerBulletList:
+            if pygame.sprite.collide_rect(es, playerBullet):
+                playerBullet.kill()
+                score.add(es.scoreValue)
+                es.kill()
+                scoreText = "Score: " + str(score.score)
                 textSurface = myFont.render(scoreText, False, BLACK)
+                
 
     #Checks if enemiesList reachs 0. If its the case, increase
-    #the enemies counter and regenerates the enemies.
+    #the enemies counter and regenerates the enemcheckHighScoreies.
     if len(enemiesList) == 0:
         enemiesCount += 1
         generateEnemies()
@@ -170,12 +213,12 @@ while run:
     #Checks if player and any of enemies collides
     for enemy in enemiesList:
         if pygame.sprite.collide_rect(enemy, player):
-            print ("Score:", score)
             run = False
 
     #Updates enemies and player bullets
     enemiesList.update(deltaTime)
     playerBulletList.update(deltaTime)
+    enemySpaceship.update(deltaTime)
     
     #draws stars
     for newStar in starsList:
@@ -186,6 +229,7 @@ while run:
     all_sprites.draw(win)
     enemiesList.draw(win)
     playerBulletList.draw(win)
+    enemySpaceship.draw(win)
 
     #Draws game Display
     pygame.draw.rect(win, gameDisplay.color, gameDisplay.rect)
@@ -193,6 +237,9 @@ while run:
 
     #Update the display (flip)
     pygame.display.update()
+
+#score.checkHighScores()
+print (score.score)
 
 #Quits the application
 pygame.quit()
