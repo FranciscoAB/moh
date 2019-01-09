@@ -28,5 +28,3 @@ class Star:
             self.rect.y = 0
             self.speed = randint(1, 2)
             self.color = (randint(0, 255), randint(0, 255), randint(0, 255))
-        
-        
