@@ -7,10 +7,10 @@ from Game import *
 class Application:
 
     def __init__(self):
-		#Initializes pygame
+	#Initializes pygame
         pygame.init()
 		
-		#Creates the game window
+	#Creates the game window
         self.win = pygame.display.set_mode((DISPLAY_WIDTH_TOTAL, DISPLAY_HEIGHT_TOTAL))
         
         #Set a title in the created window
@@ -27,11 +27,9 @@ class Application:
         self.before = pygame.time.get_ticks()
         self.deltaTime = 0
         
-        self.colorDeMierda = (123, 34, 200)
-        
         #Texts
         self.myFont = pygame.font.SysFont("Roboto", 60)
-        self.textSurfacePlay = self.myFont.render("Play!", False, self.colorDeMierda)
+        self.textSurfacePlay = self.myFont.render("Play!", False, GREEN)
         self.textSurfaceHighScores = self.myFont.render("High Scores", False, WHITE)
         self.textSurfaceQuit = self.myFont.render("Quit", False, WHITE)
 		
@@ -63,17 +61,17 @@ class Application:
                             self.option += 1
                     #Updates the text color
                     if self.option == 1:
-                        self.textSurfacePlay = self.myFont.render("Play!", False, self.colorDeMierda)
+                        self.textSurfacePlay = self.myFont.render("Play!", False, GREEN)
                         self.textSurfaceHighScores = self.myFont.render("High Scores", False, WHITE)
                         self.textSurfaceQuit = self.myFont.render("Quit", False, WHITE)
                     elif self.option == 2:
                         self.textSurfacePlay = self.myFont.render("Play!", False, WHITE)
-                        self.textSurfaceHighScores = self.myFont.render("High Scores", False, self.colorDeMierda)
+                        self.textSurfaceHighScores = self.myFont.render("High Scores", False, GREEN)
                         self.textSurfaceQuit = self.myFont.render("Quit", False, WHITE)
                     elif self.option == 3:
                         self.textSurfacePlay = self.myFont.render("Play!", False, WHITE)
                         self.textSurfaceHighScores = self.myFont.render("High Scores", False, WHITE)
-                        self.textSurfaceQuit = self.myFont.render("Quit", False, self.colorDeMierda)
+                        self.textSurfaceQuit = self.myFont.render("Quit", False, GREEN)
                             
                     if event.key == pygame.K_RETURN:
                         if self.option == 1: #The game starts

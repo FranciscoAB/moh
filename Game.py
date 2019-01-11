@@ -217,7 +217,7 @@ class Game:
             #Update the display (flip)
             pygame.display.update()
         
-        self.score.checkHighScore()
+        self.score.checkHighScore(self.win)
         
         #Delete the reference to score object so its destructor is called
         self.score = ()
