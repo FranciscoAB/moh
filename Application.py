@@ -3,6 +3,7 @@ import time
 
 from Util import *
 from Game import *
+from Score import *
 
 class Application:
 
@@ -47,8 +48,6 @@ class Application:
                 if event.type == pygame.QUIT:
                     self.run = False
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        self.run = False
                     if event.key == pygame.K_UP:
                         if self.option <= 1:
                             self.option = 3
@@ -80,7 +79,9 @@ class Application:
                             game = ()
                             
                         elif self.option == 2: #Display with high-scores shows
-                            print("gonna show high-scores")
+                            score = Score()
+                            score.showHighScores(self.win)
+                            
                         elif self.option == 3: #Quits the game
                             self.run = False
                             
