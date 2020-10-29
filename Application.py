@@ -48,6 +48,9 @@ class Application:
                 if event.type == pygame.QUIT:
                     self.run = False
                 if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        self.run = False
+                        
                     if event.key == pygame.K_UP:
                         if self.option <= 1:
                             self.option = 3
