@@ -12,12 +12,12 @@ class Star:
 
         self.color = (randint(0, 255), randint(0, 255), randint(0, 255))
 
-        self.timerBeforeMoveLimit = randint(1, 10)
+        self.timerBeforeMoveLimit = randint(4, 10)
         self.timerBeforeMove = 0
 
-    def update(self):
+    def update(self, dt):
 
-        self.timerBeforeMove += 1
+        self.timerBeforeMove += dt
         
         if self.timerBeforeMove >= self.timerBeforeMoveLimit:
             self.timerBeforeMove = 0
@@ -26,5 +26,4 @@ class Star:
         if self.rect.y > DISPLAY_HEIGHT_GAMEZONE:
             self.rect.x = randint(0, DISPLAY_WIDTH_GAMEZONE)
             self.rect.y = 0
-            self.speed = randint(1, 2)
             self.color = (randint(0, 255), randint(0, 255), randint(0, 255))
