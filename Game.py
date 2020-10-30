@@ -12,6 +12,8 @@ from Util import *
 
 from Score import *
 
+from Animation import *
+from SpritesData import *
 
 class Game:
 
@@ -77,6 +79,13 @@ class Game:
         self.scoreText = "Score: 0"
         self.textSurface = self.myFont.render(self.scoreText, False, BLACK)
         
+        '''
+        Animations
+        '''
+        self.animations = []
+        #El grupo es necesario por la funcion draw()
+        self.animGroup = pygame.sprite.Group()
+
         '''
         Game Loop
         '''
@@ -156,10 +165,12 @@ class Game:
             for enemy in self.enemiesList:
                 for playerBullet in self.playerBulletList:
                     if pygame.sprite.collide_rect(enemy, playerBullet):
+                        self.animations.append(Animation(SP_player_bullet, playerBullet, 20))
                         playerBullet.kill()
                         enemy.damage(playerBullet.power)
                         if enemy.health <= 0:
                             self.score.add(enemy.scoreValue)
+                            self.animations.append(Animation(SP_enemy_normal, enemy, 100))
                             enemy.kill()
                             self.scoreText = "Score: " + str(self.score.score)
                             self.textSurface = self.myFont.render(self.scoreText, False, BLACK)
@@ -168,8 +179,10 @@ class Game:
             for es in self.enemySpaceship:
                 for playerBullet in self.playerBulletList:
                     if pygame.sprite.collide_rect(es, playerBullet):
+                        self.animations.append(Animation(SP_player_bullet, playerBullet, 20))
                         playerBullet.kill()
                         self.score.add(es.scoreValue)
+                        self.animations.append(Animation(SP_enemy_spaceship, es, 100))
                         es.kill()
                         self.scoreText = "Score: " + str(self.score.score)
                         self.textSurface = self.myFont.render(self.scoreText, False, BLACK)
@@ -190,9 +203,18 @@ class Game:
             self.enemiesList.update(self.deltaTime)
             self.playerBulletList.update(self.deltaTime)
             self.enemySpaceship.update(self.deltaTime)
-
+            
+            #Updates stars positions
             for star in self.starsList:
                 star.update(self.deltaTime)
+
+            #Updates Animations
+            auxAnimList = []
+            for anim in self.animations:
+                if not anim.shouldDie:
+                    auxAnimList.append(anim)
+                anim.update(self.deltaTime)
+            self.animations = auxAnimList
             
             #Clears the display with black color
             self.win.fill(BLACK)
@@ -207,6 +229,14 @@ class Game:
                 self.playerBulletList.draw(self.win)
                 self.enemySpaceship.draw(self.win)
 
+                '''
+                Anims
+                '''
+                self.animGroup = pygame.sprite.Group()
+                for anim in self.animations:
+                    self.animGroup.add(anim.getCurrentSprite())
+                self.animGroup.draw(self.win)
+                
                 self.timerBeforeRefresh = 0
         
                 #Draws game Display

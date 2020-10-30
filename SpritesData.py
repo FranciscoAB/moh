@@ -1,0 +1,3 @@
+SP_enemy_normal = ["Sprites/Explotions/explotion_1.png", "Sprites/Explotions/explotion_2.png", "Sprites/Explotions/explotion_3.png"]
+SP_enemy_spaceship = ["Sprites/Score/score_1.png", "Sprites/Score/score_2.png", "Sprites/Score/score_1.png", "Sprites/Score/score_2.png", "Sprites/Score/score_1.png", "Sprites/Score/score_2.png", "Sprites/Score/score_1.png", "Sprites/Score/score_2.png", "Sprites/Score/score_1.png", "Sprites/Score/score_2.png", "Sprites/Score/score_1.png", "Sprites/Score/score_2.png", "Sprites/Score/score_1.png", "Sprites/Score/score_2.png", "Sprites/Score/score_1.png", "Sprites/Score/score_2.png"]
+SP_player_bullet = ["Sprites/Explotions/player_bullet_1.png","Sprites/Explotions/player_bullet_2.png"]
