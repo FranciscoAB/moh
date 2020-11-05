@@ -11,13 +11,13 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
 
-        self.image = pygame.image.load("player.png").convert_alpha()
+        self.image = pygame.image.load("Sprites/player.png").convert_alpha()
         self.rect = self.image.get_rect()
 
         self.updateTimerLimit = 3
         self.updateTimer = 0
 
-        self.maxCurrentBullets = 3
+        self.maxCurrentBullets = 2
         
     '''
     Player Movement functions
@@ -60,7 +60,7 @@ class PlayerBullet (pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
 
-        self.image = pygame.image.load("bullet.png").convert()
+        self.image = pygame.image.load("Sprites/bullet.png").convert()
         self.rect = self.image.get_rect()
 
         self.power = 1
@@ -76,8 +76,5 @@ class PlayerBullet (pygame.sprite.Sprite):
             self.rect.y -= 1
             self.updateTimer = 0
 
-    def mustDie(self):
         if self.rect.y <= 0:
-            return True
-        else:
-            return False
+            self.kill()
